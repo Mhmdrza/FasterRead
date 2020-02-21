@@ -43,6 +43,7 @@
         }
         50% {
           transform: scale(1.1, 1.2);
+          color: red;
         }
         100% {
           transform: scale(1);
@@ -52,14 +53,17 @@
         margin: 10px 5px;
         font-weight: lighter;
       }
-      .bold {
+      .target0 {
+        color: red !important;
+        text-shadow: 2px 2px #ff0000;
       }
       .read {
+        color: initial;
         font-weight: bolder;
         font-style: italic;
       }
       .enlarge {
-        animation: bewo 0.7s 1;
+        animation: bewo 1s 1;
       }
     </style>
   </head>
@@ -80,10 +84,9 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">Paste your text here:</span>
               </div>
-              <textarea
-                class="form-control"
-                aria-label="With textarea"
-              ></textarea>
+              <textarea class="form-control" aria-label="With textarea">
+FasterRead¼ help you understand more words per minute by focusing your attention and making it easier to keep up with the speed that you are potentionally able to read. as the result you can do what your mind is wired for naturally; chasing a moving target if you read it so far using FasterRead technique you may be able to twice your words per minute by a 10 minute practice; happy reading!</textarea
+              >
             </div>
             <div class="form-group">
               <label for="customRange1">speed</label>
@@ -108,6 +111,7 @@
       let raf;
       let words = [];
       let delayByFrame = 5;
+      let offset = 3;
       let elapsedTime = 0;
       let t0;
       let t1;
@@ -131,7 +135,7 @@
       }
 
       let currentWord = 0;
-      let delayCounter = 2;
+      let delayCounter = 1;
 
       function fire() {
         if (delayCounter < delayByFrame) {
@@ -142,6 +146,13 @@
             if (currentWord >= 1) {
               words[currentWord - 1].className += " read";
             }
+            // if (currentWord >= offset) {
+            //   let temp = currentWord - offset;
+            //   words[temp].className += " target";
+            //   requestAnimationFrame(() =>
+            //     words[temp].classList.remove("target")
+            //   );
+            // }
             words[currentWord].className += " enlarge";
             currentWord++;
             delayCounter = 1;
@@ -158,9 +169,7 @@
         elapsedTime = ((t1 - t0) / 1000).toFixed(2);
         document.getElementById("results").innerHTML =
           "" +
-          "took : " +
-          elapsedTime +
-          "equals to : " +
+          "" +
           ((words.length * 60) / elapsedTime).toFixed(0) +
           " word/minutes";
       }
