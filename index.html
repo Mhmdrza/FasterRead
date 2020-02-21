@@ -37,29 +37,42 @@
       crossorigin="anonymous"
     />
     <style>
+      @keyframes bewo {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1, 1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
       .words {
-        margin-left: 2px;
+        margin: 10px 5px;
+        font-weight: lighter;
       }
       .bold {
+      }
+      .read {
         font-weight: bolder;
+        font-style: italic;
       }
       .enlarge {
-        transition: margin 0.2s, transform 0.2s;
-        margin: 5px;
-        transform: scale(1.1);
+        animation: bewo 0.7s 1;
       }
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
-      Yo
-    </nav>
     <main>
       <section
         class="d-flex justify-content-center align-items-center flex-column"
       >
         <h1>Read Faster</h1>
-        <form class="w-100" onsubmit="words = [];formSubmit(event)">
+        <form
+          class="w-100"
+          onsubmit="words = [];currentWord = 0;formSubmit(event)"
+        >
           <div
             class="d-flex justify-content-center align-items-center flex-column"
           >
@@ -72,22 +85,39 @@
                 aria-label="With textarea"
               ></textarea>
             </div>
+            <div class="form-group">
+              <label for="customRange1">speed</label>
+              <input
+                onchange="delayByFrame=event.target.value"
+                min="0"
+                max="15"
+                step="1"
+                type="range"
+                class="custom-range"
+                id="customRange1"
+              />
+            </div>
             <button type="submit" class="btn btn-info">let it Rip!</button>
           </div>
         </form>
-        <button class="btn btn-primary" onclick="currentWord = 0;fire()">
-          Fire!
-        </button>
+        <div id="results"></div>
         <div class="d-flex p-2 m-5 border flex-wrap" id="read-area"></div>
       </section>
     </main>
     <script>
+      let raf;
       let words = [];
+      let delayByFrame = 5;
+      let elapsedTime = 0;
+      let t0;
+      let t1;
+
       function formSubmit(e) {
         e.preventDefault();
         const textAreaValue = e.target.elements[0].value;
         const spaceSeprated = textAreaValue.split(" ");
         const readArea = document.getElementById("read-area");
+        readArea.innerHTML = "";
         spaceSeprated.forEach((word, index) => {
           const wordSpan = document.createElement("span");
           wordSpan.textContent = word;
@@ -96,23 +126,43 @@
           words[index] = wordSpan;
           readArea.appendChild(wordSpan);
         });
+        t0 = performance.now();
+        fire();
       }
 
       let currentWord = 0;
-      let delayByFrame = 7;
-      let delayCounter = 1;
+      let delayCounter = 2;
+
       function fire() {
         if (delayCounter < delayByFrame) {
           delayCounter++;
-          requestAnimationFrame(fire);
+          raf = requestAnimationFrame(fire);
         } else {
           if (currentWord < words.length) {
-            words[currentWord].className += " bold enlarge";
+            if (currentWord >= 1) {
+              words[currentWord - 1].className += " read";
+            }
+            words[currentWord].className += " enlarge";
             currentWord++;
             delayCounter = 1;
-            requestAnimationFrame(fire);
+            raf = requestAnimationFrame(fire);
+            // debugger;
+          } else {
+            t1 = performance.now();
+            cancelAnimationFrame(raf);
+            showReadTime();
           }
         }
+      }
+      function showReadTime() {
+        elapsedTime = ((t1 - t0) / 1000).toFixed(2);
+        document.getElementById("results").innerHTML =
+          "" +
+          "took : " +
+          elapsedTime +
+          "equals to : " +
+          ((words.length * 60) / elapsedTime).toFixed(0) +
+          " word/minutes";
       }
     </script>
   </body>
