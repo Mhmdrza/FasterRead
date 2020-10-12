@@ -26,10 +26,6 @@
     />
     <meta name="msapplication-TileColor" content="#3372DF" />
     <link rel="shortcut icon" href="images/favicon.png" />
-    <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
-    <!--
-    <link rel="canonical" href="http://www.example.com/">
-    -->
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -90,7 +86,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">Paste your text here:</span>
               </div>
-              <textarea class="form-control" aria-label="With textarea">
+              <textarea class="form-control" rows=7 aria-label="With textarea">
 FasterRead¼ help you understand more words per minute by focusing your attention and making it easier to keep up with the speed that you are potentionally able to read. as the result you can do what your mind is wired for naturally; chasing a moving target if you read it so far using FasterRead technique you may be able to twice your words per minute by a 10 minute practice; happy reading!</textarea
               >
             </div>
@@ -137,6 +133,7 @@ FasterRead¼ help you understand more words per minute by focusing your attentio
           readArea.appendChild(wordSpan);
         });
         t0 = performance.now();
+        if(raf) cancelAnimationFrame(raf);
         fire();
       }
 
